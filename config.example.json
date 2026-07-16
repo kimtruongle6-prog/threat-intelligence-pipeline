@@ -1,0 +1,8 @@
+{
+    "GEMINI_API_KEY": "YOUR_GEMINI_API_KEY_HERE",
+    "GOOGLE_SHEETS_ID": "YOUR_SPREADSHEET_ID_HERE",
+    "RSS_FEEDS": [
+        "https://rss-example-feed-1.com",
+        "https://rss-example-feed-2.com"
+    ]
+}
