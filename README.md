@@ -1,5 +1,12 @@
 # Threat Intelligence Pipeline
+---
+**Author:** K. Le  
+**Affiliation:** Independent Research  
+**Research Focus:** Threat Intelligence Engineering, Data Processing, Pipeline Architecture
 
+**Copyright:** © 2026 K. Le. Applies only to original materials authored for this project. Third-party materials remain subject to their respective licenses.
+
+---
 ## Overview
 This repository contains a secure, end-to-end, 5-step automated Threat Intelligence Pipeline designed to collect, classify, filter, and store threat information from open-source feeds (OSINT). The pipeline integrates large language models (LLM) and automated categorization to transform raw security data into actionable threat intelligence.
 
