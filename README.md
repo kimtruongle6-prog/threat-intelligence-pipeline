@@ -12,27 +12,49 @@
 
 ## Overview
 
-This project explores a semi-automated workflow for preparing open-source threat intelligence (OSINT), using LLM-assisted analysis, human review, and thematic data organization.
+This project explores workflows for preparing open-source threat intelligence (OSINT), cleaning and organizing records, and generating thematic threat catalogs.
 
-A separate experimental workflow demonstrated the preparation of a dataset containing **185 records** and the organization of reviewed threat information into **27 thematic CSV files**. These outputs were produced through a Google Colab and NotebookLM-assisted workflow; they are not generated automatically by the current Python scripts in this repository.
+The experimental work was carried out in separate Google Colab notebooks and used live RSS feeds and an actual Google Sheets source. The reported results include **185 newly collected RSS articles**, an incremental update that brought the RSS dataset to **232 records**, and a separate catalog-generation run that exported **27 thematic CSV files containing 327 rows** from a Google Sheets worksheet. These are separate experimental data cohorts; the available notebook evidence does not establish that the catalog's 327 rows came from the RSS dataset.
 
-The GitHub repository contains early-stage Python prototypes for selected pipeline components. Actual RSS ingestion, live Google Sheets integration, automated classification, and end-to-end execution remain under development.
+The GitHub repository contains early-stage Python prototypes for selected pipeline components. Its current scripts still use simulated article records and a mock Google Sheets client; they do not reproduce the live Colab workflows end to end.
 
 For the research workflow and supporting documentation, see the [K.Le Research Portfolio — Threat Intelligence Pipeline](https://sentinel-x-report.notion.site/Threat-Intelligence-Pipeline-Automated-OSINT-Processing-LLM-Assisted-Analysis-3ac39bb2f45d80c7b44fd907cfab3429).
 
 ---
 
-## Experimental Workflow
+## Experimental Results
 
-The research workflow explored the following stages:
+### RSS Collection and Preparation
 
-1. **OSINT Feed Preparation** — Collecting and preparing publicly available cybersecurity feed data.
-2. **Data Preparation & Metadata Annotation** — Cleaning and organizing records, with preliminary AI-assisted and rule-based metadata preparation.
-3. **Contextual Analysis & Human Review** — Using NotebookLM as an interactive analysis assistant and reviewing suggested themes and annotations.
-4. **Thematic Cataloging** — Organizing reviewed records into 27 thematic CSV files.
-5. **Knowledge Management Direction** — Exploring future organization and integration of the thematic datasets into a centralized knowledge base.
+According to the Colab notebook execution report:
 
-The experimental workflow involved separate Colab and NotebookLM activities. It should not be interpreted as a fully automated pipeline implemented by the repository scripts.
+- The RSS crawler fetched live feed content from cybersecurity sources, including BleepingComputer and KrebsOnSecurity.
+- The workflow cleaned HTML content, converted available publication timestamps, and removed duplicate entries using article links.
+- One run reported **185 newly collected articles** and exported four CSV datasets: `Master_Raw_Feed.csv`, `Cleaned_Feed.csv`, `Training_Ready.csv`, and `NotebookLM_Feed.csv`.
+- A subsequent incremental update loaded the earlier 185 records, merged additional feed data, and reported **232 records after deduplication**.
+
+These counts describe the RSS notebook's reported runs. They should not be conflated with the separate catalog dataset described below.
+
+### Cyber Threat Catalog Generation
+
+According to the Cyber Threat Catalog notebook's code and execution audit:
+
+- **Source:** Google Sheets document `Labeling_Sheets_A`, worksheet `Trang tính1`.
+- The notebook loaded **328 input rows** into a Pandas DataFrame.
+- It extracted **27 unique categories** from the existing `Category/Method` column and generated **27 thematic CSV files** in Google Drive.
+- The notebook then read the exported CSV files back and reported a combined total of **327 rows**.
+- One row was excluded during export because the code applies `.dropna()` to each filtered subset. This removes any row containing a missing value in any column, not only rows with a missing category. The empty-category output therefore contained no retained records.
+
+The 327 catalog rows are based on the notebook's reported output counts. The audit did not establish a code or data link between these records and the RSS notebook's 185 newly collected or 232 incrementally updated records.
+
+### Classification and Review Boundaries
+
+- The catalog notebook groups records using category values already present in the Google Sheets `Category/Method` column. This is not evidence of an external LLM performing the classification.
+- A separate keyword-based labeling experiment used deterministic rules; an external OpenAI or Gemini classification API call was not found in the audited catalog notebook.
+- Human-in-the-Loop review was described in notebook documentation, but the audit did not identify an executable review interface or workflow.
+- NotebookLM was used for interactive analysis and organization; the physical CSV files were generated by Python/Pandas in Colab.
+
+The results above are reported from notebook cells and execution outputs supplied for review. They are not a claim that the current GitHub scripts reproduce these runs.
 
 ---
 
@@ -45,35 +67,39 @@ threat-intelligence-pipeline/
 ├── catalog/
 │   └── threat_classifier.py
 ├── config.example.json
+├── requirements.txt
 ├── .gitignore
 └── README.md
 ```
 
 ### Current Source Code
 
-- **`crawler/rss_crawler.py`** — Initial RSS crawler prototype. The current version uses simulated article records; actual RSS parsing, deduplication, and Google Sheets ingestion are not implemented.
-- **`catalog/threat_classifier.py`** — Initial cataloging prototype. The current version uses a mock Google Sheets client and writes 27 CSV files containing simulated content. It does not retrieve or classify real threat records.
+- **`crawler/rss_crawler.py`** — Initial RSS crawler prototype. The current repository version uses simulated article records; it does not implement the live RSS collection and preparation demonstrated in the Colab notebook.
+- **`catalog/threat_classifier.py`** — Initial cataloging prototype. The current repository version uses a mock Google Sheets client and simulated content. It does not retrieve the actual `Labeling_Sheets_A` worksheet or reproduce the 27-file catalog export from Colab.
 
 ---
 
 ## Current Implementation Status
 
-| Component | Current Status |
+| Component | Status |
 |---|---|
-| OSINT dataset preparation | Demonstrated in a separate Colab workflow |
-| Experimental dataset | 185 records reported in the experimental workflow |
-| AI-assisted metadata preparation | Demonstrated as preliminary output |
-| NotebookLM contextual analysis | Conducted as an interactive workflow |
-| Human review of annotations | Included in the experimental workflow |
-| Thematic CSV catalog | 27 files produced in the experimental workflow |
-| GitHub RSS crawler | Initial prototype; currently uses simulated article data |
-| GitHub threat classifier | Initial prototype; currently generates CSV files with simulated content |
-| Google Sheets API integration in repository | Not implemented |
+| Live RSS collection in Colab | Demonstrated; 185 new articles reported |
+| Incremental RSS update in Colab | Demonstrated; 232 records reported after merge and deduplication |
+| RSS CSV exports | Four datasets reported as exported |
+| Cyber Threat Catalog input | 328 rows reported from Google Sheets |
+| Thematic CSV generation in Colab | 27 files generated; 327 output rows reported |
+| Catalog data integrity | One input row excluded by `.dropna()`; output does not preserve all 328 rows |
+| Category assignment in catalog notebook | Grouping by existing `Category/Method` values |
+| External LLM classification API | Not implemented in the audited catalog notebook |
+| Executable Human-in-the-Loop review | Not identified in the audited notebook code |
+| GitHub RSS crawler | Prototype; currently uses simulated article data |
+| GitHub threat classifier | Prototype; currently uses a mock Sheets client and simulated content |
+| Live Google Sheets integration in repository | Not implemented |
 | Automated NotebookLM integration | Not implemented |
 | Automated Notion synchronization | Not implemented |
-| End-to-end automated execution | Not yet implemented or validated |
+| End-to-end automated execution in repository | Not yet implemented or validated |
 
-The experimental workflow outputs and the current repository implementation are separate. The Python scripts are an initial attempt to structure and reproduce selected processing stages.
+The Colab experiments and current repository implementation are separate. The notebook results demonstrate selected processing activities, while the repository scripts remain early-stage prototypes.
 
 ---
 
@@ -81,7 +107,7 @@ The experimental workflow outputs and the current repository implementation are 
 
 The repository includes `config.example.json` as a reference for local configuration. It contains placeholder values only.
 
-Before running either script, create a local `config.json` from `config.example.json`. The example now lists the configuration keys expected by the current prototypes. These values are placeholders: the scripts still use simulated data and do not perform live external-service integration.
+Before running either script, create a local `config.json` from `config.example.json`. The example lists the configuration keys expected by the current prototypes. These values are placeholders: the scripts still use simulated data and do not perform live external-service integration.
 
 - Keep API keys, credentials, and private identifiers out of source control.
 - The `.gitignore` file excludes `config.json`.
@@ -92,9 +118,10 @@ Before running either script, create a local `config.json` from `config.example.
 ## Security Considerations & Limitations
 
 - **Untrusted OSINT content:** External feeds may contain inaccurate, misleading, or intentionally manipulated information. Formal source validation, content sanitization, and prompt-injection controls remain areas for further implementation.
-- **Human review:** AI-generated summaries, labels, and severity suggestions are preliminary and require review. The consistency and effectiveness of the review process have not yet been evaluated through a formal validation study.
-- **Credential management:** Sensitive configuration values should be stored locally and excluded from version control. The current scripts do not yet implement complete authentication or live service integrations.
-- **Data integrity:** Taxonomy alignment and structured CSV preparation were explored in the experimental workflow. Automated schema enforcement and comprehensive data-integrity validation have not yet been demonstrated by the current GitHub scripts.
+- **Classification boundaries:** The audited catalog notebook uses existing spreadsheet category labels for grouping. Automated LLM-based classification has not been demonstrated.
+- **Human review:** A review process is described in documentation, but executable Human-in-the-Loop functionality was not identified in the audited notebook code.
+- **Data integrity:** The catalog export applies `.dropna()` to filtered subsets, which can remove rows with missing values in any column. The reported output was 327 rows from 328 input rows. More targeted missing-value handling and explicit row-reconciliation checks are needed.
+- **Reproducibility and access:** The Colab workflow depends on Google authentication, access to the source spreadsheet, and specific Google Drive paths. The audit also reported an interrupted authentication cell and a failed Git configuration cell. A clean, independent rerun has not been established.
 - **Performance and scalability:** Operating costs, usage limits, scalability, and long-term reliability have not yet been formally benchmarked.
 
 ---
@@ -102,7 +129,7 @@ Before running either script, create a local `config.json` from `config.example.
 ## Development Roadmap
 
 1. **Reliable OSINT ingestion**
-   - Implement actual RSS parsing.
+   - Port the live RSS parsing workflow into the repository.
    - Define a consistent article data structure.
    - Add URL-based or content-based duplicate detection.
    - Handle unavailable feeds and malformed entries.
@@ -110,21 +137,21 @@ Before running either script, create a local `config.json` from `config.example.
 2. **Data preparation and validation**
    - Implement HTML cleanup and date normalization.
    - Define required metadata fields.
-   - Validate missing or malformed records.
-   - Establish consistent record identifiers.
+   - Handle missing values without unintentionally dropping otherwise useful records.
+   - Add explicit input/output row reconciliation and stable record identifiers.
 
 3. **AI-assisted annotation and human review**
    - Define a repeatable annotation format.
-   - Explore LLM-assisted entity extraction, categorization, and summarization.
-   - Preserve human review before accepting important classifications.
+   - If appropriate, integrate an LLM API for entity extraction, categorization, and summarization.
+   - Implement a review step before accepting important classifications.
 
 4. **Thematic catalog generation**
    - Replace simulated data with actual input records.
-   - Implement real record segmentation and CSV generation.
-   - Validate category assignments and output schemas.
+   - Reproduce the Colab grouping and CSV export workflow.
+   - Validate category assignments, output schemas, and record counts.
 
 5. **Integration and evaluation**
-   - Explore Google Sheets and Google Drive integration.
+   - Implement and document Google Sheets and Google Drive integration.
    - Investigate structured knowledge-base synchronization.
    - Evaluate classification consistency and data quality.
    - Document reproducible execution and limitations.
@@ -135,6 +162,6 @@ These are planned development activities, not completed milestones.
 
 ## Research Direction
 
-The project investigates how OSINT data preparation, AI-assisted analysis, and human review can support the organization of open-source cybersecurity information.
+The project investigates how OSINT data preparation, structured categorization, and potential AI-assisted analysis can support the organization of open-source cybersecurity information.
 
-The experimental workflow demonstrated a 185-record dataset and 27 thematic CSV outputs. The current repository does not yet reproduce that workflow automatically. The immediate development priority is to implement reliable RSS ingestion and real data processing before expanding to external integrations and automated threat catalog generation.
+The Colab experiments reported live RSS collection and incremental updating, as well as a separate Google Sheets-based catalog export. The current GitHub repository does not yet reproduce those experiments automatically. The immediate development priority is to port the demonstrated data-processing steps into reproducible code, improve missing-value handling, and clearly separate deterministic categorization from any future LLM-assisted workflow.
