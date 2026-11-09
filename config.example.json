@@ -1,8 +1,9 @@
 {
-    "GEMINI_API_KEY": "YOUR_GEMINI_API_KEY_HERE",
-    "GOOGLE_SHEETS_ID": "YOUR_SPREADSHEET_ID_HERE",
-    "RSS_FEEDS": [
-        "https://rss-example-feed-1.com",
-        "https://rss-example-feed-2.com"
-    ]
+  "RSS_FEED_URLs": [
+    "https://example.com/feed.xml"
+  ],
+  "GOOGLE_SHEETS_NAME": "YOUR_GOOGLE_SHEETS_NAME",
+  "RAW_WORKSHEET_NAME": "RawData",
+  "WORKSHEET_NAME": "Sheet1",
+  "OUTPUT_DIRECTORY": "output/threat_catalog"
 }
