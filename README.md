@@ -81,7 +81,7 @@ The experimental workflow outputs and the current repository implementation are 
 
 The repository includes `config.example.json` as a reference for local configuration. It contains placeholder values only.
 
-Before running either script, create a local `config.json` and review the configuration keys required by the specific script. **The example configuration and script expectations are not yet fully aligned**, and the current prototypes do not perform live external-service integration.
+Before running either script, create a local `config.json` from `config.example.json`. The example now lists the configuration keys expected by the current prototypes. These values are placeholders: the scripts still use simulated data and do not perform live external-service integration.
 
 - Keep API keys, credentials, and private identifiers out of source control.
 - The `.gitignore` file excludes `config.json`.
